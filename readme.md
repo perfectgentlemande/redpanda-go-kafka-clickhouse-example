@@ -1,16 +1,16 @@
 # Commands
 
-## Running all DBs
+## Run all DBs
 
 `docker-compose up`
 
 Don't forget to run sql migrations on your ClickHouse
 
-## Running redpanda connect
+## Run redpanda connect
 
 `rpk connect run ./streams/hotel.yaml`
 
-## Running go service
+## Run go service
 
 `go run .`
 
@@ -18,7 +18,7 @@ Don't forget to run sql migrations on your ClickHouse
 
 open these URLs in your browser:
 
-`localhost:8089`
+`localhost:8089`  
 `localhost:18123/play`
 
 # Query to check data
