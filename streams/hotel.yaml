@@ -1,0 +1,51 @@
+input:
+  kafka:
+    addresses: [localhost:9093]
+    topics: [hotels_snapshot]
+    consumer_group: go_clickhouse_kafka
+    batching:
+      count: 1
+      period: 5s
+
+pipeline:
+  processors:
+    - json_schema:
+        schema_path: "file://schemas/hotel.json"
+    - catch:
+        - log:
+            level: ERROR
+            message: "Schema validation failed due to: ${!error()}"
+        - mapping: 'root = deleted()' # Drop messages that fail
+    - mapping: |
+        root.id = this.id
+        root.geo_id = this.geo_id
+        root.emails = this.emails
+        root.type = this.type
+        
+        if this.content_ru != null {
+             root.content_ru_address = this.content_ru.address
+             root.content_ru_name = this.content_ru.name
+             root.content_ru_description = this.content_ru.description
+        }
+       
+        root.created_at = this.created_at.ts_format("2006-01-02 15:04:05")
+
+output:
+  http_client:
+    url: http://localhost:18123?query=INSERT+INTO+hotels.content+FORMAT+JSONEachRow
+    verb: POST
+    headers:
+      Content-Type: application/json
+      Content-Encoding: gzip
+    rate_limit: ""
+    timeout: 5s
+    max_in_flight: 5
+    batching:
+      count: 1
+      period: 5s
+      processors:
+        - archive:
+            format: lines
+        - compress:
+            algorithm: gzip
+            level: 5

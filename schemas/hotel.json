@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "title": "Hotel",
+  "description": "Контент отеля",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "уникальный ID",
+      "format": "uuid"
+    },
+    "geo_id": {
+      "type": "integer",
+      "description": "уникальный ID в системе географии"
+    },
+    "emails": {
+      "type": "array",
+      "description": "список электронных почтовых ящиков",
+      "items": {
+        "type": "string"
+      }
+    },
+    "type": {
+      "type": "integer",
+      "description": "тип объекта размещения (отель / хостел / ...)"
+    },
+    "content_ru": {
+      "$ref": "#/definitions/ContentRu",
+      "description": "структура описывающая объект размещения (адрес / удобства / политики) на русском"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "время создания документа",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "geo_id",
+    "emails",
+    "type",
+    "created_at"
+  ],
+  "definitions": {
+    "ContentRu": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "адрес объекта в виде текста"
+        },
+        "name": {
+          "type": "string",
+          "description": "название объекта"
+        },
+        "description": {
+          "type": "string",
+          "description": "дополнительные текстовые характеристики объекта"
+        }
+      },
+      "required": [
+        "address",
+        "name",
+        "description"
+      ],
+      "title": "ContentRu"
+    }
+  }
+}
